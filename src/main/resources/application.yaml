@@ -1,0 +1,29 @@
+debug: false
+
+spring:
+  application:
+    name: parser-service
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/pricer
+    password: ${DB_PASSWORD}
+    username: ${DB_USER}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: 'false'
+    properties:
+      hibernate:
+        format_sql: 'false'
+
+logging:
+  level:
+    org:
+      hibernate: ERROR
+      springframework: INFO
+    root: INFO
+  file:
+    path: ./logs
+    max-history: '5'
+    total-size-cap: 100MB
+    max-size: 10MB
