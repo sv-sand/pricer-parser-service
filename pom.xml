@@ -12,8 +12,7 @@
 	<artifactId>parser-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>parser-service</name>
-	<description>Price parser service</description>
-	<url/>
+	<description>parser-service</description>
 	<properties>
 		<maven.compiler.source>17</maven.compiler.source>
 		<maven.compiler.target>17</maven.compiler.target>
@@ -74,6 +73,7 @@
 	</dependencies>
 
 	<build>
+		<finalName>parser-service</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>

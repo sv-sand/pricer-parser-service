@@ -1,29 +1,25 @@
 debug: false
 
 spring:
-  application:
-    name: parser-service
+  application.name: parser-service
+  output.ansi.enabled: ALWAYS
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/pricer
-    password: ${DB_PASSWORD}
+    url: jdbc:postgresql://pricer-db:5432/pricer
     username: ${DB_USER}
+    password: ${DB_PASSWORD}
   jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: 'false'
-    properties:
-      hibernate:
-        format_sql: 'false'
+    hibernate.ddl-auto: update
+    show-sql: false
+    properties.hibernate.format_sql: false
 
 logging:
   level:
-    org:
-      hibernate: ERROR
-      springframework: INFO
     root: INFO
+    org.springframework: INFO
+    org.hibernate: ERROR
   file:
     path: ./logs
-    max-history: '5'
-    total-size-cap: 100MB
+    max-history: 5
     max-size: 10MB
+    total-size-cap: 100MB
