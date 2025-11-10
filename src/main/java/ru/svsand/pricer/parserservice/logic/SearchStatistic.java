@@ -4,6 +4,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
 
+import java.sql.Timestamp;
+
 /**
  * @author sand <sve.snd@gmail.com>
  * @since 07.11.2025
@@ -18,6 +20,7 @@ public class SearchStatistic {
 	private int statusCode;
 	private String statusDescription;
 	private int count;
+	private Timestamp timestamp;
 
 	private Long version;
 

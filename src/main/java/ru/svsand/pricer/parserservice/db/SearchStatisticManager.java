@@ -31,6 +31,7 @@ public class SearchStatisticManager {
 		statisticEntity.setStatusCode(statistic.getStatusCode());
 		statisticEntity.setStatusDescription(statistic.getStatusDescription());
 		statisticEntity.setCount(statistic.getCount());
+		statisticEntity.setTimestamp(statistic.getTimestamp());
 		statisticEntity.setVersion(statistic.getVersion());
 
 		return statisticEntity;
@@ -46,6 +47,7 @@ public class SearchStatisticManager {
 				.statusCode(statisticEntity.getStatusCode())
 				.statusDescription(statisticEntity.getStatusDescription())
 				.count(statisticEntity.getCount())
+				.timestamp(statisticEntity.getTimestamp())
 				.version(statisticEntity.getVersion())
 				.build();
 	}

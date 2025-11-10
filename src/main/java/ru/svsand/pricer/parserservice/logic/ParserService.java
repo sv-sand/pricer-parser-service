@@ -10,6 +10,7 @@ import ru.svsand.pricer.parserservice.db.SearchStatisticManager;
 import ru.svsand.pricer.parserservice.logic.parser.Parser;
 import ru.svsand.pricer.parserservice.logic.parser.ParserWbApi;
 
+import java.sql.Timestamp;
 import java.util.Comparator;
 import java.util.List;
 
@@ -63,6 +64,7 @@ public class ParserService {
 				.statusCode(result.code())
 				.statusDescription(result.description())
 				.count(result.products().size())
+				.timestamp(new Timestamp(System.currentTimeMillis()))
 				.build();
 
 		searchStatisticManager.save(statistic);

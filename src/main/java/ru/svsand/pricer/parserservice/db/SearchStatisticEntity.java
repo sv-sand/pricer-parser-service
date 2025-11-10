@@ -3,6 +3,8 @@ package ru.svsand.pricer.parserservice.db;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.sql.Timestamp;
+
 /**
  * @author sand <sve.snd@gmail.com>
  * @since 07.11.2025
@@ -16,6 +18,9 @@ public class SearchStatisticEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
 	private Long id;
+
+	@Column(name = "timestamp")
+	private Timestamp timestamp;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "search_id")

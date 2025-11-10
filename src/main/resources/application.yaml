@@ -5,7 +5,7 @@ spring:
   output.ansi.enabled: ALWAYS
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://pricer-db:5432/pricer
+    url: jdbc:postgresql://${DB_HOST}:5432/pricer
     username: ${DB_USER}
     password: ${DB_PASSWORD}
   jpa:
