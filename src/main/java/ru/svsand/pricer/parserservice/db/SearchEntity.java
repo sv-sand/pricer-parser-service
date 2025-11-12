@@ -3,6 +3,8 @@ package ru.svsand.pricer.parserservice.db;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.sql.Timestamp;
+
 /**
  * @author sand <sve.snd@gmail.com>
  * @since 28.10.2025
@@ -28,6 +30,9 @@ public class SearchEntity {
 
 	@Column(name = "target_price")
 	private Double targetPrice;
+
+	@Column(name = "last_request_date")
+	private Timestamp lastRequestDate;
 
 	@Version
 	private Long version;
