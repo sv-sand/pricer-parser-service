@@ -32,17 +32,20 @@ public class ParserService {
 	@Autowired
 	SearchStatisticManager searchStatisticManager;
 
-	@Scheduled(fixedRate = 3600000)
+	@Scheduled(fixedRate = 60*1000)
 	private void updateProductsData() {
 		log.info("Updating products");
 
 		try (Parser parser = new ParserWbApi()) {
 
-			List<Search> searches = searchManager.findAll();
+			List<Search> searches = searchManager.findAllReadyForRequest();
 			for (Search search : searches) {
 				log.info("Processing {}", search);
 				Parser.Result result = parser.findProducts(search.getKeyWords());
 				saveStatistic(search, result);
+
+				search.setLastRequestDate(new Timestamp(System.currentTimeMillis()));
+				searchManager.save(search);
 
 				if (result.code() != 200)
 					log.error("Failed to find new products [{}]: {}", result.code(), result.description());

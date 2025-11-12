@@ -4,6 +4,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
 
+import java.sql.Timestamp;
+
 /**
  * @author sand <sve.snd@gmail.com>
  * @since 29.10.2025
@@ -19,6 +21,7 @@ public class Search {
 	private String keyWords;
 	private double targetPrice;
 	private User user;
+	private Timestamp lastRequestDate;
 
 	private Long version;
 
