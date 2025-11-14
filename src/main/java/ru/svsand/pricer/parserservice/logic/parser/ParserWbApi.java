@@ -5,9 +5,12 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -48,6 +51,7 @@ public class ParserWbApi implements Parser {
 	private HttpResponse<String> requestProducts(String productKeyWords) throws IOException, InterruptedException {
 		String keyWords = Arrays.stream(productKeyWords.split("\\s+"))
 				.filter(word -> !word.isEmpty())
+				.map(word -> URLEncoder.encode(word, StandardCharsets.UTF_8))
 				.collect(Collectors.joining("+"));
 		String urlString = String.format(SEARCH_URL, keyWords);
 		URI uri = URI.create(urlString);
