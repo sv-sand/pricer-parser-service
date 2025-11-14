@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 public class ParserWbApi implements Parser {
 
-	final String SEARCH_URL = "https://www.wildberries.ru/__internal/u-search/exactmatch/ru/common/v18/search?ab_testing=false&appType=1&curr=rub&dest=-1257786&hide_dtype=11&inheritFilters=false&lang=ru&page=1&query=%s&resultset=catalog&sort=popular&spp=30&suppressSpellcheck=false"; // Example API endpoint
+	final String SEARCH_URL = "https://www.wildberries.ru/__internal/u-search/exactmatch/ru/common/v18/search?ab_testing=false&appType=1&curr=rub&dest=-1257786&hide_dtype=11&inheritFilters=false&lang=ru&page=1&query=%s&resultset=catalog&sort=priceup&spp=30&suppressSpellcheck=false"; // Example API endpoint
 	final String PRODUCT_LINK = "https://www.wildberries.ru/catalog/%d/detail.aspx";
 
 	@Override
