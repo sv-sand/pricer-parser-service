@@ -31,7 +31,7 @@ public class SearchManager {
 	}
 
 	@Transactional
-	public List<Search> findAllReadyForRequest() {
+	public List<Search> findAllForRequest() {
 		LocalDateTime date = LocalDateTime.now().minusHours(1);
 		return repository.findAllReadyForRequest(Timestamp.valueOf(date))
 				.stream()

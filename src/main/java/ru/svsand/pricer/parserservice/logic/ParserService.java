@@ -8,7 +8,7 @@ import ru.svsand.pricer.parserservice.db.ProductManager;
 import ru.svsand.pricer.parserservice.db.SearchManager;
 import ru.svsand.pricer.parserservice.db.SearchStatisticManager;
 import ru.svsand.pricer.parserservice.logic.parser.Parser;
-import ru.svsand.pricer.parserservice.logic.parser.ParserWbApi;
+import ru.svsand.pricer.parserservice.logic.parser.ParserManager;
 
 import java.sql.Timestamp;
 import java.util.Comparator;
@@ -23,45 +23,41 @@ import java.util.List;
 @Service
 public class ParserService {
 
-	@Autowired
-	SearchManager searchManager;
+	public static final int MAX_PRODUCTS_PER_SEARCH = 3;
 
 	@Autowired
-	ProductManager productManager;
+	private ParserManager parserManager;
 
 	@Autowired
-	SearchStatisticManager searchStatisticManager;
+	private SearchManager searchManager;
+
+	@Autowired
+	private ProductManager productManager;
+
+	@Autowired
+	private SearchStatisticManager searchStatisticManager;
 
 	@Scheduled(fixedRate = 60*1000)
-	private void updateProductsData() {
+	public void updateProducts() {
 		log.info("Updating products");
 
-		try (Parser parser = new ParserWbApi()) {
-
-			List<Search> searches = searchManager.findAllReadyForRequest();
-			for (Search search : searches) {
-				log.info("Processing {}", search);
-				Parser.Result result = parser.findProducts(search.getKeyWords());
-				saveStatistic(search, result);
-
-				search.setLastRequestDate(new Timestamp(System.currentTimeMillis()));
-				searchManager.save(search);
-
-				if (result.code() != 200)
-					log.error("Failed to find new products [{}]: {}", result.code(), result.description());
-
-				List<Parser.ParsedProduct> parsedProducts = filterProducts(search, result.products());
-				saveProducts(search, parsedProducts);
-				log.info("Products found {}, accepted {}", result.products().size(), parsedProducts.size());
+		List<Search> searches = searchManager.findAllForRequest();
+		for (Search search : searches) {
+			try (Parser parser = parserManager.createParserByStore(search.getStore())) {
+				updateProductsBySearch(parser, search);
+			} catch (Exception e) {
+				log.error("Error updating products", e);
 			}
-		}
-		catch (Exception e) {
-			log.error("Error updating products", e);
 		}
 		log.info("Products updated");
 	}
 
-	private void saveStatistic(Search search, Parser.Result result) {
+	private void updateProductsBySearch(Parser parser, Search search) {
+		log.info("Processing {}", search);
+
+		Parser.Result result = parser.findProducts(search.getKeyWords());
+
+		// Update statistics
 		SearchStatistic statistic = SearchStatistic.builder()
 				.search(search)
 				.statusCode(result.code())
@@ -71,22 +67,28 @@ public class ParserService {
 				.build();
 
 		searchStatisticManager.save(statistic);
-	}
 
-	private List<Parser.ParsedProduct> filterProducts(Search search, List<Parser.ParsedProduct> parsedProducts) {
-		return parsedProducts.stream()
+		// Update search last request date
+		search.setLastRequestDate(new Timestamp(System.currentTimeMillis()));
+		searchManager.save(search);
+
+		// Log result
+		if (result.code() != 200)
+			log.error("Failed to find new products [{}]: {}", result.code(), result.description());
+		else
+			log.info("Products found {}", result.products().size());
+
+		// Convert and save products
+		List<Product> products = result.products().stream()
 				.filter(product -> product.price() <= search.getTargetPrice())
 				.sorted(Comparator.comparingDouble(Parser.ParsedProduct::price))
-				.limit(3)
-				.toList();
-	}
-
-	private void saveProducts(Search search, List<Parser.ParsedProduct> parsedProducts) {
-		List<Product> products = parsedProducts.stream()
+				.limit(MAX_PRODUCTS_PER_SEARCH)
 				.map(product -> parsedProductToProduct(product, search))
 				.toList();
 
 		productManager.saveAll(products);
+
+		log.info("Products accepted {}", products.size());
 	}
 
 	private Product parsedProductToProduct(Parser.ParsedProduct parsedProduct, Search search) {

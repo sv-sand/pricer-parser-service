@@ -1,5 +1,6 @@
 package ru.svsand.pricer.parserservice.logic;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
@@ -11,6 +12,7 @@ import lombok.ToString;
 
 @Data
 @Builder
+@AllArgsConstructor()
 @ToString(of = {"store", "name"})
 public class Product {
 	private Long id;
