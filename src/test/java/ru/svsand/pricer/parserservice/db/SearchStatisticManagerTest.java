@@ -10,7 +10,6 @@ import ru.svsand.pricer.parserservice.logic.Search;
 import ru.svsand.pricer.parserservice.logic.SearchStatistic;
 import ru.svsand.pricer.parserservice.Data;
 import ru.svsand.pricer.parserservice.logic.Store;
-import ru.svsand.pricer.parserservice.logic.User;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
@@ -39,7 +38,7 @@ class SearchStatisticManagerTest {
 
 		// Assert
 		checkCallRepositorySave(searchStatisticDao);
-		checkSearchStatistic(searchStatistic, result);
+		compareSearchStatistic(searchStatistic, result);
 	}
 
 	// Checks
@@ -48,20 +47,26 @@ class SearchStatisticManagerTest {
 		ArgumentCaptor<SearchStatisticDao> captor = ArgumentCaptor.forClass(SearchStatisticDao.class);
 		verify(repository, times(1)).save(captor.capture());
 
-		assertEquals(searchStatisticDao.getId(), captor.getValue().getId());
-		assertEquals(searchStatisticDao.getSearch(), captor.getValue().getSearch());
-		assertEquals(searchStatisticDao.getStatusCode(), captor.getValue().getStatusCode());
-		assertEquals(searchStatisticDao.getStatusDescription(), captor.getValue().getStatusDescription());
-		assertEquals(searchStatisticDao.getCount(), captor.getValue().getCount());
-		assertEquals(searchStatisticDao.getTimestamp(), captor.getValue().getTimestamp());
+		compareSearchStatisticDao(searchStatisticDao, captor.getValue());
 	}
 
-	private void checkSearchStatistic(SearchStatistic searchStatistic, SearchStatistic result) {
-		assertEquals(searchStatistic.getId(), result.getId());
-		assertEquals(searchStatistic.getSearch(), result.getSearch());
-		assertEquals(searchStatistic.getStatusCode(), result.getStatusCode());
-		assertEquals(searchStatistic.getStatusDescription(), result.getStatusDescription());
-		assertEquals(searchStatistic.getCount(), result.getCount());
-		assertEquals(searchStatistic.getTimestamp(), result.getTimestamp());
+	private void compareSearchStatistic(SearchStatistic expected, SearchStatistic actual) {
+		assertEquals(expected.getId(), actual.getId());
+		assertEquals(expected.getSearch(), actual.getSearch());
+		assertEquals(expected.getStatusCode(), actual.getStatusCode());
+		assertEquals(expected.getStatusDescription(), actual.getStatusDescription());
+		assertEquals(expected.getCount(), actual.getCount());
+		assertEquals(expected.getTimestamp(), actual.getTimestamp());
+		assertEquals(expected.getVersion(), actual.getVersion());
+	}
+
+	private void compareSearchStatisticDao(SearchStatisticDao expected, SearchStatisticDao actual) {
+		assertEquals(expected.getId(), actual.getId());
+		assertEquals(expected.getSearch(), actual.getSearch());
+		assertEquals(expected.getStatusCode(), actual.getStatusCode());
+		assertEquals(expected.getStatusDescription(), actual.getStatusDescription());
+		assertEquals(expected.getCount(), actual.getCount());
+		assertEquals(expected.getTimestamp(), actual.getTimestamp());
+		assertEquals(expected.getVersion(), actual.getVersion());
 	}
 }

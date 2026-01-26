@@ -36,16 +36,16 @@ class UserManagerTest {
 
 		// Assert
 		checkCallRepositoryFindByTgId(101L);
-		checkUser(user, result);
+		compareUser(user, result);
 	}
 
 	@Test
 	void findByTgIdNull() {
 		// Arrange
-		when(repository.findByTgId(101L)).thenReturn(List.of());
+		when(repository.findByTgId(any())).thenReturn(List.of());
 
 		// Act
-		User result = manager.findByTgId(any());
+		User result = manager.findByTgId(101L);
 
 		// Assert
 		checkCallRepositoryFindByTgId(101L);
@@ -65,7 +65,7 @@ class UserManagerTest {
 
 		// Assert
 		checkCallRepositorySave(userDao);
-		checkUser(user, result);
+		compareUser(user, result);
 	}
 
 	// Checks
@@ -80,14 +80,20 @@ class UserManagerTest {
 		ArgumentCaptor<UserDao> captor = ArgumentCaptor.forClass(UserDao.class);
 		verify(repository, times(1)).save(captor.capture());
 
-		assertEquals(userDao.getId(), captor.getValue().getId());
-		assertEquals(userDao.getTgId(), captor.getValue().getTgId());
-		assertEquals(userDao.getName(), captor.getValue().getName());
+		compareUserDao(userDao, captor.getValue());
 	}
 
-	private void checkUser(User expectedUser, User actualUser) {
-		assertEquals(expectedUser.getId(), actualUser.getId());
-		assertEquals(expectedUser.getTgId(), actualUser.getTgId());
-		assertEquals(expectedUser.getName(), actualUser.getName());
+	private void compareUser(User expected, User actual) {
+		assertEquals(expected.getId(), actual.getId());
+		assertEquals(expected.getName(), actual.getName());
+		assertEquals(expected.getTgId(), actual.getTgId());
+		assertEquals(expected.getVersion(), actual.getVersion());
+	}
+
+	private void compareUserDao(UserDao expected, UserDao actual) {
+		assertEquals(expected.getId(), actual.getId());
+		assertEquals(expected.getName(), actual.getName());
+		assertEquals(expected.getTgId(), actual.getTgId());
+		assertEquals(expected.getVersion(), actual.getVersion());
 	}
 }

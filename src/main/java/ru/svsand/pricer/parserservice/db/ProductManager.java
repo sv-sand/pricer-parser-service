@@ -37,16 +37,19 @@ public class ProductManager {
 	}
 
 	@Transactional
-	public void saveAll(List<Product> products) {
-		List<ProductDao> entities = products.stream()
+	public List<Product> saveAll(List<Product> products) {
+		List<ProductDao> productDaoList = products.stream()
 				.map(ProductManager::toDao)
 				.toList();
-		repository.saveAll(entities);
+		return repository.saveAll(productDaoList).stream()
+				.map(ProductManager::fromDao)
+				.toList();
 	}
 
 	@Transactional
-	public void save(Product product) {
-		repository.save(toDao(product));
+	public Product save(Product product) {
+		ProductDao productDao = repository.save(toDao(product));
+		return fromDao(productDao);
 	}
 
 	// Conversion

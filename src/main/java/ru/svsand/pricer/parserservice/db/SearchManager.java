@@ -41,8 +41,9 @@ public class SearchManager {
 	}
 
 	@Transactional
-	public void save(@NotNull Search search) {
-		repository.save(toDao(search));
+	public Search save(@NotNull Search search) {
+		SearchDao searchDao = repository.save(toDao(search));
+		return fromDao(searchDao);
 	}
 
 	// Conversion

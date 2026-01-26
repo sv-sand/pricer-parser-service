@@ -1,5 +1,6 @@
 package ru.svsand.pricer.parserservice;
 
+import ru.svsand.pricer.parserservice.db.ProductDao;
 import ru.svsand.pricer.parserservice.db.SearchDao;
 import ru.svsand.pricer.parserservice.db.SearchStatisticDao;
 import ru.svsand.pricer.parserservice.db.UserDao;
@@ -56,6 +57,25 @@ public class Data {
 		searchDao.setLastRequestDate(currentTimeTillMinutes());
 		searchDao.setVersion(1001L);
 		return searchDao;
+	}
+
+	public static Product product(Search search) {
+		return new Product(1L, "Product 1", Store.WB, search, 101L, "http://example.com/1", 500.0, false, 1001L);
+	}
+
+	public static ProductDao productDao(SearchDao searchDao, Store store) {
+		ProductDao productDao = new ProductDao();
+		productDao.setId(1L);
+		productDao.setName("Product 1");
+		productDao.setSearch(searchDao);
+		productDao.setStore(store.name());
+		productDao.setStoreProductId(101L);
+		productDao.setStoreProductLink("http://example.com/1");
+		productDao.setPrice(500.0);
+		productDao.setUserNotified(false);
+		productDao.setVersion(1001L);
+
+		return productDao;
 	}
 
 	public static List<Product> products(Search search) {
