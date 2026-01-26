@@ -55,16 +55,17 @@ class ParserServiceTest {
 	@Test
 	void updateProducts() {
 		Store store = Store.WB;
-		User user = Data.user();
-		Search search = Data.search(store, user);
+		Search search = Data.search(store, Data.user());
+		SearchStatistic searchStatistic = Data.searchStatistic(search);
+		searchStatistic.setCount(4);
 		List<Product> products = Data.products(search);
 		Parser.Result parserResult = new Parser.Result(200, "OK", Data.parsedProducts());
 
 		// Arrange
 		when(ParserManager.createParserByStore(any())).thenReturn(parser);
-		doNothing().when(searchManager).save(any());
-		doNothing().when(searchStatisticManager).save(any());
-		doNothing().when(productManager).saveAll(any());
+		when(searchManager.save(any())).thenReturn(search);
+		when(searchStatisticManager.save(any())).thenReturn(Data.searchStatistic(search));
+		when(productManager.saveAll(any())).thenReturn(products);
 
 		when(searchManager.findAllForRequest()).thenReturn(List.of(search));
 		when(parser.findProducts(anyString())).thenReturn(parserResult);
@@ -81,7 +82,7 @@ class ParserServiceTest {
 		checkCallParserFindProducts("test product");
 		checkCallProductManagerSaveAll(products);
 		checkCallProductManagerFindByStoreProduct(store, products);
-		checkCallSearchStatisticManagerSave(search, 200, "OK", 4);
+		checkCallSearchStatisticManagerSave(searchStatistic);
 	}
 
 	@Test
@@ -117,16 +118,16 @@ class ParserServiceTest {
 	@Test
 	void updateProductsResult404() {
 		Store store = Store.WB;
-		User user = Data.user();
-		Search search = Data.search(store, user);
+		Search search = Data.search(store, Data.user());
+		SearchStatistic searchStatistic = new SearchStatistic(1L, search, 404, "Not found", 0, Data.currentTimeTillMinutes(), 101L);
 		List<Product> products = new ArrayList<>();
 		Parser.Result parserResult = new Parser.Result(404, "Not found", new ArrayList<>());
 
 		// Arrange
 		when(ParserManager.createParserByStore(any())).thenReturn(parser);
-		doNothing().when(searchManager).save(any());
-		doNothing().when(searchStatisticManager).save(any());
-		doNothing().when(productManager).saveAll(any());
+		when(searchManager.save(any())).thenReturn(search);
+		when(searchStatisticManager.save(any())).thenReturn(Data.searchStatistic(search));
+		when(productManager.saveAll(any())).thenReturn(products);
 
 		when(searchManager.findAllForRequest()).thenReturn(List.of(search));
 		when(parser.findProducts(anyString())).thenReturn(parserResult);
@@ -136,7 +137,7 @@ class ParserServiceTest {
 
 		// Assert
 		checkCallSearchManagerSave(List.of(search));
-		checkCallSearchStatisticManagerSave(search, 404, "Not found", 0);
+		checkCallSearchStatisticManagerSave(searchStatistic);
 		checkCallProductManagerSaveAll(products);
 
 		checkCallSearchManagerFindAllForRequest();
@@ -199,29 +200,13 @@ class ParserServiceTest {
 		assertEquals(storeProductIds, storeProductIdCaptor.getAllValues());
 	}
 
-	private void checkCallSearchStatisticManagerSave(Search search, int statusCode, String description, int count) {
+	private void checkCallSearchStatisticManagerSave(SearchStatistic searchStatistic) {
 		ArgumentCaptor<SearchStatistic> captor = ArgumentCaptor.forClass(SearchStatistic.class);
 		verify(searchStatisticManager, times(1)).save(captor.capture());
-		SearchStatistic savedStatistic = captor.getValue();
 
-		assertEquals(search, savedStatistic.getSearch());
-		assertEquals(statusCode, savedStatistic.getStatusCode());
-		assertEquals(description, savedStatistic.getStatusDescription());
-		assertEquals(count, savedStatistic.getCount());
-		assertEquals(truncateToMinutes(Data.currentTimeTillMinutes()),
-				truncateToMinutes(savedStatistic.getTimestamp()),
-				"Check statistic timestamp");
-	}
-
-
-	// Support methods
-
-	private Timestamp truncateToMinutes(Timestamp timestamp) {
-		if (timestamp == null) {
-			return null;
-		}
-		LocalDateTime dateTime = timestamp.toLocalDateTime()
-				.truncatedTo(ChronoUnit.MINUTES);
-		return Timestamp.valueOf(dateTime);
+		assertEquals(searchStatistic.getSearch(), captor.getValue().getSearch());
+		assertEquals(searchStatistic.getStatusCode(), captor.getValue().getStatusCode());
+		assertEquals(searchStatistic.getStatusDescription(), captor.getValue().getStatusDescription());
+		assertEquals(searchStatistic.getCount(), captor.getValue().getCount());
 	}
 }
