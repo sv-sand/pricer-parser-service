@@ -6,6 +6,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import ru.svsand.pricer.parserservice.Data;
 import ru.svsand.pricer.parserservice.logic.User;
 
 import java.util.List;
@@ -17,21 +18,21 @@ import static org.mockito.Mockito.*;
 class UserManagerTest {
 
 	@InjectMocks
-	private UserManager userManager;
+	private UserManager manager;
 
 	@Mock
 	private UserRepository repository;
 
 	@Test
 	void findByTgId() {
-		User user = createUser();
-		UserDao userDao = createDaoUser();
+		User user = Data.user();
+		UserDao userDao = Data.userDao();
 
 		// Arrange
-		when(repository.findByTgId(101L)).thenReturn(List.of(userDao));
+		when(repository.findByTgId(any())).thenReturn(List.of(userDao));
 
 		// Act
-		User result = userManager.findByTgId(101L);
+		User result = manager.findByTgId(101L);
 
 		// Assert
 		checkCallRepositoryFindByTgId(101L);
@@ -44,7 +45,7 @@ class UserManagerTest {
 		when(repository.findByTgId(101L)).thenReturn(List.of());
 
 		// Act
-		User result = userManager.findByTgId(101L);
+		User result = manager.findByTgId(any());
 
 		// Assert
 		checkCallRepositoryFindByTgId(101L);
@@ -53,14 +54,14 @@ class UserManagerTest {
 
 	@Test
 	void save() {
-		User user = createUser();
-		UserDao userDao = createDaoUser();
+		User user = Data.user();
+		UserDao userDao = Data.userDao();
 
 		// Arrange
-		when(repository.save(userDao)).thenReturn(userDao);
+		when(repository.save(any())).thenReturn(userDao);
 
 		// Act
-		User result = userManager.save(user);
+		User result = manager.save(user);
 
 		// Assert
 		checkCallRepositorySave(userDao);
@@ -88,26 +89,5 @@ class UserManagerTest {
 		assertEquals(expectedUser.getId(), actualUser.getId());
 		assertEquals(expectedUser.getTgId(), actualUser.getTgId());
 		assertEquals(expectedUser.getName(), actualUser.getName());
-	}
-
-	// Data builders
-
-	private User createUser() {
-		return User.builder()
-				.id(1L)
-				.name("Test user")
-				.tgId(101L)
-				.version(1001L)
-				.build();
-	}
-
-	private UserDao createDaoUser() {
-		UserDao user = new UserDao();
-		user.setId(1L);
-		user.setName("Test user");
-		user.setTgId(101L);
-		user.setVersion(1001L);
-
-		return user;
 	}
 }

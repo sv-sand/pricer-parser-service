@@ -16,39 +16,40 @@ public class SearchStatisticManager {
 	SearchStatisticRepository repository;
 
 	@Transactional
-	public void save(SearchStatistic statistic) {
-		repository.save(toDao(statistic));
+	public SearchStatistic save(SearchStatistic statistic) {
+		SearchStatisticDao searchStatisticDao = repository.save(toDao(statistic));
+		return fromDao(searchStatisticDao);
 	}
 
 	// Conversion
 
-	public static SearchStatisticDao toDao(SearchStatistic statistic) {
+	public static SearchStatisticDao toDao(SearchStatistic searchStatistic) {
 		SearchStatisticDao statisticEntity = new SearchStatisticDao();
-		if (!statistic.isNew())
-			statisticEntity.setId(statistic.getId());
+		if (!searchStatistic.isNew())
+			statisticEntity.setId(searchStatistic.getId());
 
-		statisticEntity.setSearch(SearchManager.toDao(statistic.getSearch()));
-		statisticEntity.setStatusCode(statistic.getStatusCode());
-		statisticEntity.setStatusDescription(statistic.getStatusDescription());
-		statisticEntity.setCount(statistic.getCount());
-		statisticEntity.setTimestamp(statistic.getTimestamp());
-		statisticEntity.setVersion(statistic.getVersion());
+		statisticEntity.setSearch(SearchManager.toDao(searchStatistic.getSearch()));
+		statisticEntity.setStatusCode(searchStatistic.getStatusCode());
+		statisticEntity.setStatusDescription(searchStatistic.getStatusDescription());
+		statisticEntity.setCount(searchStatistic.getCount());
+		statisticEntity.setTimestamp(searchStatistic.getTimestamp());
+		statisticEntity.setVersion(searchStatistic.getVersion());
 
 		return statisticEntity;
 	}
 
-	public static SearchStatistic fromDao(SearchStatisticDao statisticEntity) {
-		if (statisticEntity == null)
+	public static SearchStatistic fromDao(SearchStatisticDao searchStatisticDao) {
+		if (searchStatisticDao == null)
 			return null;
 
 		return SearchStatistic.builder()
-				.id(statisticEntity.getId())
-				.search(SearchManager.fromDao(statisticEntity.getSearch()))
-				.statusCode(statisticEntity.getStatusCode())
-				.statusDescription(statisticEntity.getStatusDescription())
-				.count(statisticEntity.getCount())
-				.timestamp(statisticEntity.getTimestamp())
-				.version(statisticEntity.getVersion())
+				.id(searchStatisticDao.getId())
+				.search(SearchManager.fromDao(searchStatisticDao.getSearch()))
+				.statusCode(searchStatisticDao.getStatusCode())
+				.statusDescription(searchStatisticDao.getStatusDescription())
+				.count(searchStatisticDao.getCount())
+				.timestamp(searchStatisticDao.getTimestamp())
+				.version(searchStatisticDao.getVersion())
 				.build();
 	}
 }

@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
+import ru.svsand.pricer.parserservice.Data;
 import ru.svsand.pricer.parserservice.db.*;
 import ru.svsand.pricer.parserservice.logic.parser.Parser;
 import ru.svsand.pricer.parserservice.logic.parser.ParserManager;
@@ -54,9 +55,10 @@ class ParserServiceTest {
 	@Test
 	void updateProducts() {
 		Store store = Store.WB;
-		Search search = search(store);
-		List<Product> products = products(search);
-		Parser.Result parserResult = new Parser.Result(200, "OK", parsedProducts());
+		User user = Data.user();
+		Search search = Data.search(store, user);
+		List<Product> products = Data.products(search);
+		Parser.Result parserResult = new Parser.Result(200, "OK", Data.parsedProducts());
 
 		// Arrange
 		when(ParserManager.createParserByStore(any())).thenReturn(parser);
@@ -97,7 +99,8 @@ class ParserServiceTest {
 	@Test
 	void updateProductsParserException() {
 		Store store = Store.WB;
-		Search search = search(store);
+		User user = Data.user();
+		Search search = Data.search(store, user);
 
 		// Arrange
 		when(searchManager.findAllForRequest()).thenReturn(List.of(search));
@@ -114,7 +117,8 @@ class ParserServiceTest {
 	@Test
 	void updateProductsResult404() {
 		Store store = Store.WB;
-		Search search = search(store);
+		User user = Data.user();
+		Search search = Data.search(store, user);
 		List<Product> products = new ArrayList<>();
 		Parser.Result parserResult = new Parser.Result(404, "Not found", new ArrayList<>());
 
@@ -196,8 +200,6 @@ class ParserServiceTest {
 	}
 
 	private void checkCallSearchStatisticManagerSave(Search search, int statusCode, String description, int count) {
-		Timestamp currentTime = new Timestamp(System.currentTimeMillis());
-
 		ArgumentCaptor<SearchStatistic> captor = ArgumentCaptor.forClass(SearchStatistic.class);
 		verify(searchStatisticManager, times(1)).save(captor.capture());
 		SearchStatistic savedStatistic = captor.getValue();
@@ -206,7 +208,7 @@ class ParserServiceTest {
 		assertEquals(statusCode, savedStatistic.getStatusCode());
 		assertEquals(description, savedStatistic.getStatusDescription());
 		assertEquals(count, savedStatistic.getCount());
-		assertEquals(truncateToMinutes(currentTime),
+		assertEquals(truncateToMinutes(Data.currentTimeTillMinutes()),
 				truncateToMinutes(savedStatistic.getTimestamp()),
 				"Check statistic timestamp");
 	}
@@ -221,31 +223,5 @@ class ParserServiceTest {
 		LocalDateTime dateTime = timestamp.toLocalDateTime()
 				.truncatedTo(ChronoUnit.MINUTES);
 		return Timestamp.valueOf(dateTime);
-	}
-
-	private Search search(Store store) {
-		return Search.builder()
-				.id(1L)
-				.keyWords("test product")
-				.targetPrice(1000.0)
-				.store(store)
-				.build();
-	}
-
-	private List<Product> products(Search search) {
-		return List.of(
-				new Product(1L, "Product 1", search.getStore(), search, 101L, "http://example.com/1", 500.0, false, 0L),
-				new Product(2L, "Product 2", search.getStore(), search, 102L, "http://example.com/2", 700.0, false, 0L),
-				new Product(4L, "Product 4", search.getStore(), search, 104L, "http://example.com/4", 1000.0, false, 0L)
-		);
-	}
-
-	private List<Parser.ParsedProduct> parsedProducts() {
-		return List.of(
-				new Parser.ParsedProduct(101L, "Product 1", "http://example.com/1", 500.0),
-				new Parser.ParsedProduct(102L, "Product 2", "http://example.com/2", 700.0),
-				new Parser.ParsedProduct(103L, "Product 3", "http://example.com/3", 1500.0),
-				new Parser.ParsedProduct(104L, "Product 4", "http://example.com/4", 1000.0)
-		);
 	}
 }
