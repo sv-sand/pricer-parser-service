@@ -26,9 +26,6 @@ public class ParserService {
 	public static final int MAX_PRODUCTS_PER_SEARCH = 3;
 
 	@Autowired
-	private ParserManager parserManager;
-
-	@Autowired
 	private SearchManager searchManager;
 
 	@Autowired
@@ -43,7 +40,7 @@ public class ParserService {
 
 		List<Search> searches = searchManager.findAllForRequest();
 		for (Search search : searches) {
-			try (Parser parser = parserManager.createParserByStore(search.getStore())) {
+			try (Parser parser = ParserManager.createParserByStore(search.getStore())) {
 				updateProductsBySearch(parser, search);
 			} catch (Exception e) {
 				log.error("Error updating products", e);
@@ -69,7 +66,8 @@ public class ParserService {
 		searchStatisticManager.save(statistic);
 
 		// Update search last request date
-		search.setLastRequestDate(new Timestamp(System.currentTimeMillis()));
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+		search.setLastRequestDate(timestamp);
 		searchManager.save(search);
 
 		// Log result
@@ -78,32 +76,24 @@ public class ParserService {
 		else
 			log.info("Products found {}", result.products().size());
 
-		// Convert and save products
-		List<Product> products = result.products().stream()
+		// Convert and save relevant products
+		List<Product> relevantProducts = result.products().stream()
 				.filter(product -> product.price() <= search.getTargetPrice())
 				.sorted(Comparator.comparingDouble(Parser.ParsedProduct::price))
 				.limit(MAX_PRODUCTS_PER_SEARCH)
-				.map(product -> parsedProductToProduct(product, search))
+				.map(product -> parsedProductToProduct(search, product))
 				.toList();
 
-		productManager.saveAll(products);
+		productManager.saveAll(relevantProducts);
 
-		log.info("Products accepted {}", products.size());
+		log.info("Products accepted {}", relevantProducts.size());
 	}
 
-	private Product parsedProductToProduct(Parser.ParsedProduct parsedProduct, Search search) {
+	private Product parsedProductToProduct(Search search, Parser.ParsedProduct parsedProduct) {
 		Product product = productManager.findByStoreProductId(search.getStore(), parsedProduct.id());
 		if (product != null)
 			return product;
 
-		return Product.builder()
-				.name(parsedProduct.name())
-				.search(search)
-				.store(search.getStore())
-				.storeProductId(parsedProduct.id())
-				.storeProductLink(parsedProduct.link())
-				.price(parsedProduct.price())
-				.userNotified(false)
-				.build();
+		return ParserManager.fromParserProduct(search, parsedProduct);
 	}
 }

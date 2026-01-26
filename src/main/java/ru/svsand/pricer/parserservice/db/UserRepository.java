@@ -9,6 +9,6 @@ import java.util.List;
  * @since 05.11.2025
  */
 
-public interface UserRepository extends JpaRepository<UserEntity, Long>  {
-	List<UserEntity> findByTgId(Long tgId);
+public interface UserRepository extends JpaRepository<UserDao, Long>  {
+	List<UserDao> findByTgId(Long tgId);
 }

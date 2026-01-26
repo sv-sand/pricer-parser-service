@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @since 07.11.2025
  */
 
-public interface SearchStatisticRepository extends JpaRepository<SearchStatisticEntity, Long> {
+public interface SearchStatisticRepository extends JpaRepository<SearchStatisticDao, Long> {
 }

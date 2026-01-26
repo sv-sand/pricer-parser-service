@@ -11,7 +11,7 @@ import lombok.Data;
 @Entity
 @Data
 @Table(name = "products")
-public class ProductEntity {
+public class ProductDao {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
@@ -22,7 +22,7 @@ public class ProductEntity {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "search_id")
-	private SearchEntity search;
+	private SearchDao search;
 
 	@Column(name = "store")
 	private String store;

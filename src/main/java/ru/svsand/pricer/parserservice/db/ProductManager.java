@@ -23,67 +23,67 @@ public class ProductManager {
 	public List<Product> findAll() {
 		return repository.findAll()
 				.stream()
-				.map(ProductManager::map)
+				.map(ProductManager::fromDao)
 				.toList();
 	}
 
 	@Transactional
 	public Product findByStoreProductId(Store store, Long storeProductId) {
-		List<ProductEntity> products = repository.findByStoreAndStoreProductId(store.name(), storeProductId);
+		List<ProductDao> products = repository.findByStoreAndStoreProductId(store.name(), storeProductId);
 		if (products.isEmpty())
 			return null;
 
-		return ProductManager.map(products.get(0));
+		return ProductManager.fromDao(products.get(0));
 	}
 
 	@Transactional
 	public void saveAll(List<Product> products) {
-		List<ProductEntity> entities = products.stream()
-				.map(ProductManager::map)
+		List<ProductDao> entities = products.stream()
+				.map(ProductManager::toDao)
 				.toList();
 		repository.saveAll(entities);
 	}
 
 	@Transactional
 	public void save(Product product) {
-		repository.save(map(product));
+		repository.save(toDao(product));
 	}
 
 	// Conversion
 
-	public static ProductEntity map(Product product) {
-		SearchEntity searchEntity = SearchManager.map(product.getSearch());
+	public static ProductDao toDao(Product product) {
+		SearchDao searchDao = SearchManager.toDao(product.getSearch());
 
-		ProductEntity productEntity = new ProductEntity();
+		ProductDao productDao = new ProductDao();
 		if (!product.isNew())
-			productEntity.setId(product.getId());
+			productDao.setId(product.getId());
 
-		productEntity.setName(product.getName());
-		productEntity.setSearch(searchEntity);
-		productEntity.setStore(product.getStore().name());
-		productEntity.setStoreProductId(product.getStoreProductId());
-		productEntity.setStoreProductLink(product.getStoreProductLink());
-		productEntity.setPrice(product.getPrice());
-		productEntity.setUserNotified(product.isUserNotified());
-		productEntity.setVersion(product.getVersion());
+		productDao.setName(product.getName());
+		productDao.setSearch(searchDao);
+		productDao.setStore(product.getStore().name());
+		productDao.setStoreProductId(product.getStoreProductId());
+		productDao.setStoreProductLink(product.getStoreProductLink());
+		productDao.setPrice(product.getPrice());
+		productDao.setUserNotified(product.isUserNotified());
+		productDao.setVersion(product.getVersion());
 
-		return productEntity;
+		return productDao;
 	}
 
-	public static Product map(ProductEntity productEntity) {
-		if (productEntity == null)
+	public static Product fromDao(ProductDao productDao) {
+		if (productDao == null)
 			return null;
 
 		return Product.builder()
-				.id(productEntity.getId())
-				.name(productEntity.getName())
-				.search(SearchManager.map(productEntity.getSearch()))
-				.store(Store.valueOf(productEntity.getStore()))
-				.storeProductId(productEntity.getStoreProductId())
-				.storeProductLink(productEntity.getStoreProductLink())
-				.price(productEntity.getPrice())
-				.userNotified(productEntity.isUserNotified())
-				.version(productEntity.getVersion())
+				.id(productDao.getId())
+				.name(productDao.getName())
+				.search(SearchManager.fromDao(productDao.getSearch()))
+				.store(Store.valueOf(productDao.getStore()))
+				.storeProductId(productDao.getStoreProductId())
+				.storeProductLink(productDao.getStoreProductLink())
+				.price(productDao.getPrice())
+				.userNotified(productDao.isUserNotified())
+				.version(productDao.getVersion())
 				.build();
 	}
 }

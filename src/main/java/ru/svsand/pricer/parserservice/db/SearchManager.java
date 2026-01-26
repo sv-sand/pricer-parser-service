@@ -26,7 +26,7 @@ public class SearchManager {
 	public List<Search> findAll() {
 		return repository.findAll()
 				.stream()
-				.map(SearchManager::map)
+				.map(SearchManager::fromDao)
 				.toList();
 	}
 
@@ -35,44 +35,44 @@ public class SearchManager {
 		LocalDateTime date = LocalDateTime.now().minusHours(1);
 		return repository.findAllReadyForRequest(Timestamp.valueOf(date))
 				.stream()
-				.map(SearchManager::map)
+				.map(SearchManager::fromDao)
 				.toList();
 	}
 
 	@Transactional
 	public void save(@NotNull Search search) {
-		repository.save(map(search));
+		repository.save(toDao(search));
 	}
 
 	// Conversion
 
-	public static SearchEntity map(Search search) {
-		SearchEntity searchEntity = new SearchEntity();
+	public static SearchDao toDao(Search search) {
+		SearchDao searchDao = new SearchDao();
 		if (!search.isNew())
-			searchEntity.setId(search.getId());
+			searchDao.setId(search.getId());
 
-		searchEntity.setUser(UserManager.map(search.getUser()));
-		searchEntity.setStore(search.getStore().name());
-		searchEntity.setKeyWords(search.getKeyWords());
-		searchEntity.setTargetPrice(search.getTargetPrice());
-		searchEntity.setLastRequestDate(search.getLastRequestDate());
-		searchEntity.setVersion(search.getVersion());
+		searchDao.setUser(UserManager.toDao(search.getUser()));
+		searchDao.setStore(search.getStore().name());
+		searchDao.setKeyWords(search.getKeyWords());
+		searchDao.setTargetPrice(search.getTargetPrice());
+		searchDao.setLastRequestDate(search.getLastRequestDate());
+		searchDao.setVersion(search.getVersion());
 
-		return searchEntity;
+		return searchDao;
 	}
 
-	public static Search map(SearchEntity searchEntity) {
-		if (searchEntity == null)
+	public static Search fromDao(SearchDao searchDao) {
+		if (searchDao == null)
 			return null;
 
 		return Search.builder()
-				.id(searchEntity.getId())
-				.user(UserManager.map(searchEntity.getUser()))
-				.store(Store.valueOf(searchEntity.getStore()))
-				.keyWords(searchEntity.getKeyWords())
-				.targetPrice(searchEntity.getTargetPrice())
-				.lastRequestDate(searchEntity.getLastRequestDate())
-				.version(searchEntity.getVersion())
+				.id(searchDao.getId())
+				.user(UserManager.fromDao(searchDao.getUser()))
+				.store(Store.valueOf(searchDao.getStore()))
+				.keyWords(searchDao.getKeyWords())
+				.targetPrice(searchDao.getTargetPrice())
+				.lastRequestDate(searchDao.getLastRequestDate())
+				.version(searchDao.getVersion())
 				.build();
 	}
 }

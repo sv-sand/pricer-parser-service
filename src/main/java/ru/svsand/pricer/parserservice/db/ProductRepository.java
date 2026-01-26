@@ -9,6 +9,6 @@ import java.util.List;
  * @since 28.10.2025
  */
 
-public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
-	List<ProductEntity> findByStoreAndStoreProductId(String store, Long storeProductId);
+public interface ProductRepository extends JpaRepository<ProductDao, Long> {
+	List<ProductDao> findByStoreAndStoreProductId(String store, Long storeProductId);
 }

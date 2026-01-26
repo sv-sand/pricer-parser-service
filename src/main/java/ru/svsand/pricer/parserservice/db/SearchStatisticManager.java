@@ -17,17 +17,17 @@ public class SearchStatisticManager {
 
 	@Transactional
 	public void save(SearchStatistic statistic) {
-		repository.save(map(statistic));
+		repository.save(toDao(statistic));
 	}
 
 	// Conversion
 
-	public static SearchStatisticEntity map(SearchStatistic statistic) {
-		SearchStatisticEntity statisticEntity = new SearchStatisticEntity();
+	public static SearchStatisticDao toDao(SearchStatistic statistic) {
+		SearchStatisticDao statisticEntity = new SearchStatisticDao();
 		if (!statistic.isNew())
 			statisticEntity.setId(statistic.getId());
 
-		statisticEntity.setSearch(SearchManager.map(statistic.getSearch()));
+		statisticEntity.setSearch(SearchManager.toDao(statistic.getSearch()));
 		statisticEntity.setStatusCode(statistic.getStatusCode());
 		statisticEntity.setStatusDescription(statistic.getStatusDescription());
 		statisticEntity.setCount(statistic.getCount());
@@ -37,13 +37,13 @@ public class SearchStatisticManager {
 		return statisticEntity;
 	}
 
-	public static SearchStatistic map(SearchStatisticEntity statisticEntity) {
+	public static SearchStatistic fromDao(SearchStatisticDao statisticEntity) {
 		if (statisticEntity == null)
 			return null;
 
 		return SearchStatistic.builder()
 				.id(statisticEntity.getId())
-				.search(SearchManager.map(statisticEntity.getSearch()))
+				.search(SearchManager.fromDao(statisticEntity.getSearch()))
 				.statusCode(statisticEntity.getStatusCode())
 				.statusDescription(statisticEntity.getStatusDescription())
 				.count(statisticEntity.getCount())

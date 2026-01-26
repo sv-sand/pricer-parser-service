@@ -13,7 +13,7 @@ import java.sql.Timestamp;
 @Entity
 @Data
 @Table(name = "search_statistic")
-public class SearchStatisticEntity {
+public class SearchStatisticDao {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
@@ -24,7 +24,7 @@ public class SearchStatisticEntity {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "search_id")
-	private SearchEntity search;
+	private SearchDao search;
 
 	@Column(name = "status_code")
 	private int statusCode;

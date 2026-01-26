@@ -12,10 +12,10 @@ import java.util.List;
  * @since 28.10.2025
  */
 
-public interface SearchRepository extends JpaRepository<SearchEntity, Long> {
+public interface SearchRepository extends JpaRepository<SearchDao, Long> {
 	@Query(value = "SELECT * " +
 			"FROM searches t " +
 			"WHERE t.last_request_date IS NULL OR t.last_request_date < :date " +
 			"LIMIT 3", nativeQuery = true)
-	List<SearchEntity> findAllReadyForRequest(@Param("date") Timestamp date);
+	List<SearchDao> findAllReadyForRequest(@Param("date") Timestamp date);
 }
