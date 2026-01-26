@@ -147,27 +147,26 @@ class ParserServiceTest {
 	}
 
 	private void checkCallSearchManagerSave(List<Search> searches) {
-		ArgumentCaptor<Search> searchCaptor = ArgumentCaptor.forClass(Search.class);
-		verify(searchManager, times(1)).save(searchCaptor.capture());
-		List<Search> savedSearches = searchCaptor.getAllValues();
+		ArgumentCaptor<Search> captor = ArgumentCaptor.forClass(Search.class);
+		verify(searchManager, times(1)).save(captor.capture());
+		List<Search> savedSearches = captor.getAllValues();
 
 		assertEquals(searches.size(), savedSearches.size());
 		assertEquals(searches, savedSearches);
 	}
 
 	private void checkCallParserFindProducts(String productKeyWords) {
-		ArgumentCaptor<String> productKeyWordsCaptor = ArgumentCaptor.forClass(String.class);
-		verify(parser, times(1)).findProducts(productKeyWordsCaptor.capture());
-		String capturedProductKeyWords = productKeyWordsCaptor.getValue();
+		ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+		verify(parser, times(1)).findProducts(captor.capture());
 
-		assertEquals(productKeyWords, capturedProductKeyWords);
+		assertEquals(productKeyWords, captor.getValue());
 	}
 
 	private void checkCallProductManagerSaveAll(List<Product> products) {
 		@SuppressWarnings("unchecked")
-		ArgumentCaptor<List<Product>> productsCaptor = ArgumentCaptor.forClass(List.class);
-		verify(productManager, times(1)).saveAll(productsCaptor.capture());
-		List<Product> savedProducts = productsCaptor.getValue();
+		ArgumentCaptor<List<Product>> captor = ArgumentCaptor.forClass(List.class);
+		verify(productManager, times(1)).saveAll(captor.capture());
+		List<Product> savedProducts = captor.getValue();
 
 		assertEquals(products.size(), savedProducts.size());
 
@@ -186,7 +185,8 @@ class ParserServiceTest {
 
 		ArgumentCaptor<Store> storeCaptor = ArgumentCaptor.forClass(Store.class);
 		ArgumentCaptor<Long> storeProductIdCaptor = ArgumentCaptor.forClass(Long.class);
-		verify(productManager, times(relevantProducts.size())).findByStoreProductId(storeCaptor.capture(), storeProductIdCaptor.capture());
+		verify(productManager, times(relevantProducts.size()))
+				.findByStoreProductId(storeCaptor.capture(), storeProductIdCaptor.capture());
 
 		if (relevantProducts.isEmpty())
 			return;
@@ -198,9 +198,9 @@ class ParserServiceTest {
 	private void checkCallSearchStatisticManagerSave(Search search, int statusCode, String description, int count) {
 		Timestamp currentTime = new Timestamp(System.currentTimeMillis());
 
-		ArgumentCaptor<SearchStatistic> searchStatisticCaptor = ArgumentCaptor.forClass(SearchStatistic.class);
-		verify(searchStatisticManager, times(1)).save(searchStatisticCaptor.capture());
-		SearchStatistic savedStatistic = searchStatisticCaptor.getValue();
+		ArgumentCaptor<SearchStatistic> captor = ArgumentCaptor.forClass(SearchStatistic.class);
+		verify(searchStatisticManager, times(1)).save(captor.capture());
+		SearchStatistic savedStatistic = captor.getValue();
 
 		assertEquals(search, savedStatistic.getSearch());
 		assertEquals(statusCode, savedStatistic.getStatusCode());

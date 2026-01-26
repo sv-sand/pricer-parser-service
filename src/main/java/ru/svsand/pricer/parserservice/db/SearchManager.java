@@ -33,6 +33,7 @@ public class SearchManager {
 	@Transactional
 	public List<Search> findAllForRequest() {
 		LocalDateTime date = LocalDateTime.now().minusHours(1);
+
 		return repository.findAllReadyForRequest(Timestamp.valueOf(date))
 				.stream()
 				.map(SearchManager::fromDao)
@@ -46,7 +47,7 @@ public class SearchManager {
 
 	// Conversion
 
-	public static SearchDao toDao(Search search) {
+	public static SearchDao toDao(@NotNull Search search) {
 		SearchDao searchDao = new SearchDao();
 		if (!search.isNew())
 			searchDao.setId(search.getId());

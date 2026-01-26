@@ -1,9 +1,6 @@
 package ru.svsand.pricer.parserservice.logic;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
 
 /**
  * @author sand <sve.snd@gmail.com>
@@ -14,6 +11,7 @@ import lombok.ToString;
 @Builder
 @AllArgsConstructor()
 @ToString(of = {"store", "name"})
+@EqualsAndHashCode(of = {"id"})
 public class Product {
 	private Long id;
 

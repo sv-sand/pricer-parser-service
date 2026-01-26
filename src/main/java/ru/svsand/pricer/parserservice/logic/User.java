@@ -2,6 +2,7 @@ package ru.svsand.pricer.parserservice.logic;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 /**
@@ -12,6 +13,7 @@ import lombok.ToString;
 @Data
 @Builder
 @ToString(of = {"name", "id"})
+@EqualsAndHashCode(of = {"id"})
 public class User {
 	private Long id;
 	private String name;

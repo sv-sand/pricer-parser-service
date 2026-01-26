@@ -2,6 +2,7 @@ package ru.svsand.pricer.parserservice.logic;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import java.sql.Timestamp;
@@ -14,6 +15,7 @@ import java.sql.Timestamp;
 @Data
 @Builder
 @ToString(of = {"id", "search", "statusCode"})
+@EqualsAndHashCode(of = {"id"})
 public class SearchStatistic {
 	private Long id;
 	private Search search;

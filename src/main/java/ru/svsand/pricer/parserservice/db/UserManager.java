@@ -29,7 +29,8 @@ public class UserManager {
 
 	@Transactional
 	public User save(@NotNull User user) {
-		return fromDao(repository.save(toDao(user)));
+		UserDao userDao = repository.save(toDao(user));
+		return fromDao(userDao);
 	}
 
 	// Conversion

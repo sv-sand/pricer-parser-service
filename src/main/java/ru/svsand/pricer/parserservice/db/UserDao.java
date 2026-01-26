@@ -25,4 +25,6 @@ public class UserDao {
 
 	@Version
 	private Long version;
+
+
 }
