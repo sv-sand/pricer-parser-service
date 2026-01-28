@@ -1,5 +1,6 @@
 package ru.svsand.pricer.parserservice.logic.parser;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,12 +28,16 @@ class ParserWbApiTest {
 
 	@Mock
 	private static HttpClient.Builder httpClientBuilder;
-
 	private static MockedStatic<HttpClient> mockedHttpClient;
 
 	@BeforeAll
 	static void beforeAll() {
 		mockedHttpClient = Mockito.mockStatic(HttpClient.class);
+	}
+
+	@AfterAll
+	static void afterAll() {
+		mockedHttpClient.close();
 	}
 
 	@Test
