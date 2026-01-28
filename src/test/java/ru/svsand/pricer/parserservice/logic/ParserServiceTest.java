@@ -2,19 +2,17 @@ package ru.svsand.pricer.parserservice.logic;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.svsand.pricer.parserservice.Data;
-import ru.svsand.pricer.parserservice.db.*;
+import ru.svsand.pricer.parserservice.db.ProductManager;
+import ru.svsand.pricer.parserservice.db.SearchManager;
+import ru.svsand.pricer.parserservice.db.SearchStatisticManager;
 import ru.svsand.pricer.parserservice.logic.parser.Parser;
 import ru.svsand.pricer.parserservice.logic.parser.ParserManager;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 

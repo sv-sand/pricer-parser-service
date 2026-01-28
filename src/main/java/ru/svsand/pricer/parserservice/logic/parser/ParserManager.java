@@ -20,7 +20,7 @@ public class ParserManager {
 		};
 	}
 
-	public static Product fromParserProduct(@NotNull Search search, @NotNull Parser.ParsedProduct parsedProduct) {
+	public static Product fromParsedProduct(@NotNull Search search, @NotNull Parser.ParsedProduct parsedProduct) {
 		return Product.builder()
 				.name(parsedProduct.name())
 				.search(search)

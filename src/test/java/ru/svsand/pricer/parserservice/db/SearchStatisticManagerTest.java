@@ -6,9 +6,9 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import ru.svsand.pricer.parserservice.Data;
 import ru.svsand.pricer.parserservice.logic.Search;
 import ru.svsand.pricer.parserservice.logic.SearchStatistic;
-import ru.svsand.pricer.parserservice.Data;
 import ru.svsand.pricer.parserservice.logic.Store;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

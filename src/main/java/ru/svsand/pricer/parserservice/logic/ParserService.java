@@ -94,6 +94,6 @@ public class ParserService {
 		if (product != null)
 			return product;
 
-		return ParserManager.fromParserProduct(search, parsedProduct);
+		return ParserManager.fromParsedProduct(search, parsedProduct);
 	}
 }

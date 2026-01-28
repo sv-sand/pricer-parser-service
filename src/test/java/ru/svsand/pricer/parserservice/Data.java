@@ -7,8 +7,15 @@ import ru.svsand.pricer.parserservice.db.UserDao;
 import ru.svsand.pricer.parserservice.logic.*;
 import ru.svsand.pricer.parserservice.logic.parser.Parser;
 
+import javax.net.ssl.SSLSession;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpHeaders;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author sand <sve.snd@gmail.com>
@@ -118,6 +125,50 @@ public class Data {
 		searchStatisticDao.setVersion(1001L);
 
 		return searchStatisticDao;
+	}
+
+	public static HttpResponse<String> httpResponse(int expectedStatusCode, String expectedBody) {
+		return new HttpResponse<>() {
+			@Override
+			public int statusCode() {
+				return expectedStatusCode;
+			}
+
+			@Override
+			public HttpRequest request() {
+				return null;
+			}
+
+			@Override
+			public Optional<HttpResponse<String>> previousResponse() {
+				return Optional.empty();
+			}
+
+			@Override
+			public HttpHeaders headers() {
+				return null;
+			}
+
+			@Override
+			public String body() {
+				return expectedBody;
+			}
+
+			@Override
+			public Optional<SSLSession> sslSession() {
+				return Optional.empty();
+			}
+
+			@Override
+			public URI uri() {
+				return null;
+			}
+
+			@Override
+			public HttpClient.Version version() {
+				return null;
+			}
+		};
 	}
 
 	// Helpful methods
