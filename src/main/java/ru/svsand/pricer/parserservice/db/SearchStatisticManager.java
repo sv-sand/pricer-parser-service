@@ -15,6 +15,9 @@ public class SearchStatisticManager {
 	@Autowired
 	SearchStatisticRepository repository;
 
+	@Autowired
+	SearchManager searchManager;
+
 	@Transactional
 	public SearchStatistic save(SearchStatistic statistic) {
 		SearchStatisticDao searchStatisticDao = repository.save(toDao(statistic));

@@ -19,6 +19,9 @@ public class ProductManager {
 	@Autowired
 	private ProductRepository repository;
 
+	@Autowired
+	private SearchManager searchManager;
+
 	@Transactional
 	public List<Product> findAll() {
 		return repository.findAll()
@@ -33,7 +36,7 @@ public class ProductManager {
 		if (products.isEmpty())
 			return null;
 
-		return ProductManager.fromDao(products.get(0));
+		return fromDao(products.get(0));
 	}
 
 	@Transactional
@@ -41,6 +44,7 @@ public class ProductManager {
 		List<ProductDao> productDaoList = products.stream()
 				.map(ProductManager::toDao)
 				.toList();
+
 		return repository.saveAll(productDaoList).stream()
 				.map(ProductManager::fromDao)
 				.toList();

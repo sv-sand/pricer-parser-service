@@ -22,6 +22,9 @@ public class SearchManager {
 	@Autowired
 	SearchRepository repository;
 
+	@Autowired
+	private UserManager userManager;
+
 	@Transactional
 	public List<Search> findAll() {
 		return repository.findAll()

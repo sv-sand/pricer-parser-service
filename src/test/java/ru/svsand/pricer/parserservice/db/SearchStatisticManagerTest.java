@@ -23,6 +23,9 @@ class SearchStatisticManagerTest {
 	@Mock
 	private SearchStatisticRepository repository;
 
+	@Mock
+	private SearchManager searchManager;
+
 	@Test
 	void save() {
 		Search search = Data.search(Store.WB, Data.user());
