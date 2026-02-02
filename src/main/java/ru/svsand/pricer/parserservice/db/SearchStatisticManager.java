@@ -31,9 +31,13 @@ public class SearchStatisticManager {
 		if (!searchStatistic.isNew())
 			statisticEntity.setId(searchStatistic.getId());
 
+		String description = searchStatistic.getStatusDescription();
+		if (description.length() > 255)
+			description = description.substring(0, 255);
+
 		statisticEntity.setSearch(SearchManager.toDao(searchStatistic.getSearch()));
 		statisticEntity.setStatusCode(searchStatistic.getStatusCode());
-		statisticEntity.setStatusDescription(searchStatistic.getStatusDescription().substring(0, 255));
+		statisticEntity.setStatusDescription(description);
 		statisticEntity.setCount(searchStatistic.getCount());
 		statisticEntity.setTimestamp(searchStatistic.getTimestamp());
 		statisticEntity.setVersion(searchStatistic.getVersion());
