@@ -60,10 +60,10 @@ class ParserServiceTest {
 		Parser.Result parserResult = new Parser.Result(200, "OK", Data.parsedProducts());
 
 		// Arrange
-		when(ParserManager.createParserByStore(any())).thenReturn(parser);
-		when(searchManager.save(any())).thenReturn(search);
-		when(searchStatisticManager.save(any())).thenReturn(Data.searchStatistic(search));
-		when(productManager.saveAll(any())).thenReturn(products);
+		when(ParserManager.createParserByStore(any(Store.class))).thenReturn(parser);
+		when(searchManager.save(any(Search.class))).thenReturn(search);
+		when(searchStatisticManager.save(any(SearchStatistic.class))).thenReturn(Data.searchStatistic(search));
+		when(productManager.saveAll(anyList())).thenReturn(products);
 
 		when(searchManager.findAllForRequest()).thenReturn(List.of(search));
 		when(parser.findProducts(anyString())).thenReturn(parserResult);
@@ -75,16 +75,16 @@ class ParserServiceTest {
 		parserService.updateProducts();
 
 		// Assert
-		checkCallSearchManagerFindAllForRequest();
-		checkCallSearchManagerSave(List.of(search));
-		checkCallParserFindProducts("test product");
-		checkCallProductManagerSaveAll(products);
-		checkCallProductManagerFindByStoreProduct(store, products);
-		checkCallSearchStatisticManagerSave(searchStatistic);
+		checkCall_SearchManager_FindAllForRequest();
+		checkCall_SearchManager_Save(List.of(search));
+		checkCall_Parser_FindProducts("test product");
+		checkCall_ProductManager_SaveAll(products);
+		checkCall_ProductManager_FindByStoreProduct(store, products);
+		checkCall_SearchStatisticManager_Save(searchStatistic);
 	}
 
 	@Test
-	void updateProductsNoResults() {
+	void updateProducts_NoResults() {
 		// Arrange
 		when(searchManager.findAllForRequest()).thenReturn(new ArrayList<>());
 
@@ -92,29 +92,29 @@ class ParserServiceTest {
 		parserService.updateProducts();
 
 		// Assert
-		checkCallSearchManagerFindAllForRequest();
+		checkCall_SearchManager_FindAllForRequest();
 	}
 
 	@Test
-	void updateProductsParserException() {
+	void updateProducts_ParserException() {
 		Store store = Store.WB;
 		User user = Data.user();
 		Search search = Data.search(store, user);
 
 		// Arrange
 		when(searchManager.findAllForRequest()).thenReturn(List.of(search));
-		when(ParserManager.createParserByStore(any())).thenReturn(parser);
+		when(ParserManager.createParserByStore(any(Store.class))).thenReturn(parser);
 		when(parser.findProducts(anyString())).thenThrow(new RuntimeException("Test exception"));
 
 		// Act
 		parserService.updateProducts();
 
 		// Assert
-		checkCallSearchManagerFindAllForRequest();
+		checkCall_SearchManager_FindAllForRequest();
 	}
 
 	@Test
-	void updateProductsResult404() {
+	void updateProducts_Result404() {
 		Store store = Store.WB;
 		Search search = Data.search(store, Data.user());
 		SearchStatistic searchStatistic = new SearchStatistic(1L, search, 404, "Not found", 0, Data.currentTimeTillMinutes(), 101L);
@@ -122,10 +122,10 @@ class ParserServiceTest {
 		Parser.Result parserResult = new Parser.Result(404, "Not found", new ArrayList<>());
 
 		// Arrange
-		when(ParserManager.createParserByStore(any())).thenReturn(parser);
-		when(searchManager.save(any())).thenReturn(search);
-		when(searchStatisticManager.save(any())).thenReturn(Data.searchStatistic(search));
-		when(productManager.saveAll(any())).thenReturn(products);
+		when(ParserManager.createParserByStore(any(Store.class))).thenReturn(parser);
+		when(searchManager.save(any(Search.class))).thenReturn(search);
+		when(searchStatisticManager.save(any(SearchStatistic.class))).thenReturn(Data.searchStatistic(search));
+		when(productManager.saveAll(anyList())).thenReturn(products);
 
 		when(searchManager.findAllForRequest()).thenReturn(List.of(search));
 		when(parser.findProducts(anyString())).thenReturn(parserResult);
@@ -134,22 +134,22 @@ class ParserServiceTest {
 		parserService.updateProducts();
 
 		// Assert
-		checkCallSearchManagerSave(List.of(search));
-		checkCallSearchStatisticManagerSave(searchStatistic);
-		checkCallProductManagerSaveAll(products);
+		checkCall_SearchManager_Save(List.of(search));
+		checkCall_SearchStatisticManager_Save(searchStatistic);
+		checkCall_ProductManager_SaveAll(products);
 
-		checkCallSearchManagerFindAllForRequest();
-		checkCallParserFindProducts("test product");
-		checkCallProductManagerFindByStoreProduct(store, products);
+		checkCall_SearchManager_FindAllForRequest();
+		checkCall_Parser_FindProducts("test product");
+		checkCall_ProductManager_FindByStoreProduct(store, products);
 	}
 
 	// Checks
 
-	private void checkCallSearchManagerFindAllForRequest() {
+	private void checkCall_SearchManager_FindAllForRequest() {
 		verify(searchManager, times(1)).findAllForRequest();
 	}
 
-	private void checkCallSearchManagerSave(List<Search> searches) {
+	private void checkCall_SearchManager_Save(List<Search> searches) {
 		ArgumentCaptor<Search> captor = ArgumentCaptor.forClass(Search.class);
 		verify(searchManager, times(1)).save(captor.capture());
 		List<Search> savedSearches = captor.getAllValues();
@@ -158,14 +158,14 @@ class ParserServiceTest {
 		assertEquals(searches, savedSearches);
 	}
 
-	private void checkCallParserFindProducts(String productKeyWords) {
+	private void checkCall_Parser_FindProducts(String productKeyWords) {
 		ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
 		verify(parser, times(1)).findProducts(captor.capture());
 
 		assertEquals(productKeyWords, captor.getValue());
 	}
 
-	private void checkCallProductManagerSaveAll(List<Product> products) {
+	private void checkCall_ProductManager_SaveAll(List<Product> products) {
 		@SuppressWarnings("unchecked")
 		ArgumentCaptor<List<Product>> captor = ArgumentCaptor.forClass(List.class);
 		verify(productManager, times(1)).saveAll(captor.capture());
@@ -181,7 +181,7 @@ class ParserServiceTest {
 		}
 	}
 
-	private void checkCallProductManagerFindByStoreProduct(Store store, List<Product> relevantProducts) {
+	private void checkCall_ProductManager_FindByStoreProduct(Store store, List<Product> relevantProducts) {
 		List<Long> storeProductIds = relevantProducts.stream()
 				.map(Product::getStoreProductId)
 				.toList();
@@ -198,7 +198,7 @@ class ParserServiceTest {
 		assertEquals(storeProductIds, storeProductIdCaptor.getAllValues());
 	}
 
-	private void checkCallSearchStatisticManagerSave(SearchStatistic searchStatistic) {
+	private void checkCall_SearchStatisticManager_Save(SearchStatistic searchStatistic) {
 		ArgumentCaptor<SearchStatistic> captor = ArgumentCaptor.forClass(SearchStatistic.class);
 		verify(searchStatisticManager, times(1)).save(captor.capture());
 

@@ -47,7 +47,7 @@ class ProductManagerTest {
 	}
 
 	@Test
-	void findAllEmpty() {
+	void findAll_Empty() {
 		// Arrange
 		when(repository.findAll()).thenReturn(List.of());
 
@@ -67,27 +67,27 @@ class ProductManagerTest {
 		ProductDao productDao = Data.productDao(searchDao, store);
 
 		// Arrange
-		when(repository.findByStoreAndStoreProductId(any(), any())).thenReturn(List.of(productDao));
+		when(repository.findByStoreAndStoreProductId(anyString(), any())).thenReturn(List.of(productDao));
 
 		// Act
 		Product result = manager.findByStoreProductId(store, product.getStoreProductId());
 
 		// Assert
-		checkCallRepositoryFindByStoreProductId("WB", 101L);
+		checkCall_Repository_FindByStoreProductId("WB", 101L);
 		compareProduct(product, result);
 	}
 
 	@Test
-	void findByStoreProductIdEmpty() {
+	void findByStoreProductId_Empty() {
 		// Arrange
-		when(repository.findByStoreAndStoreProductId(any(), any())).thenReturn(List.of());
+		when(repository.findByStoreAndStoreProductId(anyString(), any())).thenReturn(List.of());
 
 		// Act
 		Product result = manager.findByStoreProductId(Store.WB, 101L);
 
 		// Assert
 		assertNull(result);
-		checkCallRepositoryFindByStoreProductId("WB", 101L);
+		checkCall_Repository_FindByStoreProductId("WB", 101L);
 	}
 
 	@Test
@@ -99,13 +99,13 @@ class ProductManagerTest {
 		ProductDao productDao = Data.productDao(searchDao, store);
 
 		// Arrange
-		when(repository.saveAll(any())).thenReturn(List.of(productDao));
+		when(repository.saveAll(anyList())).thenReturn(List.of(productDao));
 
 		// Act
 		List<Product> result = manager.saveAll(List.of(product));
 
 		// Assert
-		checkCallRepositorySaveAll(List.of(productDao));
+		checkCall_Repository_SaveAll(List.of(productDao));
 		compareProduct(product, result.get(0));
 	}
 
@@ -118,26 +118,26 @@ class ProductManagerTest {
 		ProductDao productDao = Data.productDao(searchDao, store);
 
 		// Arrange
-		when(repository.save(any())).thenReturn(productDao);
+		when(repository.save(any(ProductDao.class))).thenReturn(productDao);
 
 		// Act
 		Product result = manager.save(product);
 
 		// Assert
-		checkCallRepositorySave(productDao);
+		checkCall_Repository_Save(productDao);
 		compareProduct(product, result);
 	}
 
 	// Checks
 
-	private void checkCallRepositorySave(ProductDao productDao) {
+	private void checkCall_Repository_Save(ProductDao productDao) {
 		ArgumentCaptor<ProductDao> captor = ArgumentCaptor.forClass(ProductDao.class);
 		verify(repository, times(1)).save(captor.capture());
 
 		compareProductDao(productDao, captor.getValue());
 	}
 
-	private void checkCallRepositorySaveAll(List<ProductDao> productDaoList) {
+	private void checkCall_Repository_SaveAll(List<ProductDao> productDaoList) {
 		@SuppressWarnings("unchecked")
 		ArgumentCaptor<List<ProductDao>> captor = ArgumentCaptor.forClass(List.class);
 		verify(repository, times(1)).saveAll(captor.capture());
@@ -147,7 +147,7 @@ class ProductManagerTest {
 			compareProductDao(productDaoList.get(i), captor.getValue().get(i));
 	}
 
-	private void checkCallRepositoryFindByStoreProductId(String store, Long storeProductId) {
+	private void checkCall_Repository_FindByStoreProductId(String store, Long storeProductId) {
 		ArgumentCaptor<String> storeCaptor = ArgumentCaptor.forClass(String.class);
 		ArgumentCaptor<Long> idCaptor = ArgumentCaptor.forClass(Long.class);
 		verify(repository, times(1))

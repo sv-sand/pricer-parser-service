@@ -10,6 +10,7 @@ import ru.svsand.pricer.parserservice.Data;
 import ru.svsand.pricer.parserservice.logic.Search;
 import ru.svsand.pricer.parserservice.logic.Store;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -42,7 +43,7 @@ class SearchManagerTest {
 	}
 
 	@Test
-	void findAllEmpty() {
+	void findAll_Empty() {
 		// Arrange
 		when(repository.findAll()).thenReturn(List.of());
 
@@ -59,7 +60,7 @@ class SearchManagerTest {
 		SearchDao searchDao = Data.searchDao(Store.WB, Data.userDao());
 
 		// Arrange
-		when(repository.findAllReadyForRequest(any())).thenReturn(List.of(searchDao));
+		when(repository.findAllReadyForRequest(any(Timestamp.class))).thenReturn(List.of(searchDao));
 
 		// Act
 		List<Search> result = manager.findAllForRequest();
@@ -70,9 +71,9 @@ class SearchManagerTest {
 	}
 
 	@Test
-	void findAllForRequestEmpty() {
+	void findAllForRequest_Empty() {
 		// Arrange
-		when(repository.findAllReadyForRequest(any())).thenReturn(List.of());
+		when(repository.findAllReadyForRequest(any(Timestamp.class))).thenReturn(List.of());
 
 		// Act
 		List<Search> result = manager.findAllForRequest();
@@ -87,21 +88,25 @@ class SearchManagerTest {
 		SearchDao searchDao = Data.searchDao(Store.WB, Data.userDao());
 
 		// Arrange
-		when(repository.save(any())).thenReturn(searchDao);
+		when(repository.save(any(SearchDao.class))).thenReturn(searchDao);
 
 		// Act
 		Search result = manager.save(search);
 
 		// Assert
-		checkCallRepositorySave(searchDao);
+		checkCall_Repository_Save(searchDao);
 		compareSearch(search, result);
 	}
 
-	private void checkCallRepositorySave(SearchDao searchDao) {
+	// Checks
+
+	private void checkCall_Repository_Save(SearchDao searchDao) {
 		ArgumentCaptor<SearchDao> captor = ArgumentCaptor.forClass(SearchDao.class);
 		verify(repository, times(1)).save(captor.capture());
 		compareSearchDao(searchDao, captor.getValue());
 	}
+
+	// Helpful methods
 
 	private void compareSearchDao(SearchDao expected, SearchDao actual) {
 		assertEquals(expected.getId(), actual.getId());

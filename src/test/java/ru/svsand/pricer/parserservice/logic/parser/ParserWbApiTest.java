@@ -57,7 +57,7 @@ class ParserWbApiTest {
 
 		// Assert
 		String urlString = String.format(parser.SEARCH_URL, "test+search");
-		checkCallClientSend("GET", urlString);
+		checkCall_Client_Send("GET", urlString);
 
 		assertEquals(200, result.code());
 		assertEquals("", result.description());
@@ -71,7 +71,7 @@ class ParserWbApiTest {
 	}
 
 	@Test
-	void findProductsEmpty() throws IOException, InterruptedException {
+	void findProducts_Empty() throws IOException, InterruptedException {
 		String responseBody = "{\"products\":[]}";
 		HttpResponse<String> response = Data.httpResponse(200, responseBody);
 
@@ -85,7 +85,7 @@ class ParserWbApiTest {
 
 		// Assert
 		String urlString = String.format(parser.SEARCH_URL, "test+search");
-		checkCallClientSend("GET", urlString);
+		checkCall_Client_Send("GET", urlString);
 
 		assertEquals(200, result.code());
 		assertEquals("", result.description());
@@ -93,7 +93,7 @@ class ParserWbApiTest {
 	}
 
 	@Test
-	void findProductsUnavailable() throws IOException, InterruptedException {
+	void findProducts_Unavailable() throws IOException, InterruptedException {
 		// Arrange
 		when(HttpClient.newBuilder()).thenReturn(httpClientBuilder);
 		when(httpClientBuilder.build()).thenReturn(client);
@@ -111,7 +111,7 @@ class ParserWbApiTest {
 
 	// Checks
 
-	private void checkCallClientSend(String method, String uri) throws IOException, InterruptedException {
+	private void checkCall_Client_Send(String method, String uri) throws IOException, InterruptedException {
 		ArgumentCaptor<HttpRequest> captorRequest = ArgumentCaptor.forClass(HttpRequest.class);
 		ArgumentCaptor<HttpResponse.BodyHandler<String>> captorBodyHandler = ArgumentCaptor.forClass(HttpResponse.BodyHandler.class);
 		verify(client, times(1)).send(captorRequest.capture(), captorBodyHandler.capture());

@@ -33,7 +33,7 @@ public class SearchStatisticManager {
 
 		statisticEntity.setSearch(SearchManager.toDao(searchStatistic.getSearch()));
 		statisticEntity.setStatusCode(searchStatistic.getStatusCode());
-		statisticEntity.setStatusDescription(searchStatistic.getStatusDescription());
+		statisticEntity.setStatusDescription(searchStatistic.getStatusDescription().substring(0, 255));
 		statisticEntity.setCount(searchStatistic.getCount());
 		statisticEntity.setTimestamp(searchStatistic.getTimestamp());
 		statisticEntity.setVersion(searchStatistic.getVersion());

@@ -34,24 +34,26 @@ class SearchStatisticManagerTest {
 		SearchStatisticDao searchStatisticDao = Data.searchStatisticDao(searchDao);
 
 		// Arrange
-		when(repository.save(any())).thenReturn(searchStatisticDao);
+		when(repository.save(any(SearchStatisticDao.class))).thenReturn(searchStatisticDao);
 
 		// Act
 		SearchStatistic result = manager.save(searchStatistic);
 
 		// Assert
-		checkCallRepositorySave(searchStatisticDao);
+		checkCall_Repository_Save(searchStatisticDao);
 		compareSearchStatistic(searchStatistic, result);
 	}
 
 	// Checks
 
-	private void checkCallRepositorySave(SearchStatisticDao searchStatisticDao) {
+	private void checkCall_Repository_Save(SearchStatisticDao searchStatisticDao) {
 		ArgumentCaptor<SearchStatisticDao> captor = ArgumentCaptor.forClass(SearchStatisticDao.class);
 		verify(repository, times(1)).save(captor.capture());
 
 		compareSearchStatisticDao(searchStatisticDao, captor.getValue());
 	}
+
+	// Helpful methods
 
 	private void compareSearchStatistic(SearchStatistic expected, SearchStatistic actual) {
 		assertEquals(expected.getId(), actual.getId());

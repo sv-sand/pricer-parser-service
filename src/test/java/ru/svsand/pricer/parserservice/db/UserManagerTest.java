@@ -30,26 +30,26 @@ class UserManagerTest {
 		UserDao userDao = Data.userDao();
 
 		// Arrange
-		when(repository.findByTgId(any())).thenReturn(List.of(userDao));
+		when(repository.findByTgId(anyLong())).thenReturn(List.of(userDao));
 
 		// Act
 		User result = manager.findByTgId(101L);
 
 		// Assert
-		checkCallRepositoryFindByTgId(101L);
+		checkCall_Repository_FindByTgId(101L);
 		compareUser(user, result);
 	}
 
 	@Test
-	void findByTgIdNull() {
+	void findByTgId_Null() {
 		// Arrange
-		when(repository.findByTgId(any())).thenReturn(List.of());
+		when(repository.findByTgId(anyLong())).thenReturn(List.of());
 
 		// Act
 		User result = manager.findByTgId(101L);
 
 		// Assert
-		checkCallRepositoryFindByTgId(101L);
+		checkCall_Repository_FindByTgId(101L);
 		assertNull(result);
 	}
 
@@ -59,30 +59,32 @@ class UserManagerTest {
 		UserDao userDao = Data.userDao();
 
 		// Arrange
-		when(repository.save(any())).thenReturn(userDao);
+		when(repository.save(any(UserDao.class))).thenReturn(userDao);
 
 		// Act
 		User result = manager.save(user);
 
 		// Assert
-		checkCallRepositorySave(userDao);
+		checkCall_Repository_Save(userDao);
 		compareUser(user, result);
 	}
 
 	// Checks
 
-	private void checkCallRepositoryFindByTgId(Long tgId) {
+	private void checkCall_Repository_FindByTgId(Long tgId) {
 		ArgumentCaptor<Long> captor = ArgumentCaptor.forClass(Long.class);
 		verify(repository, times(1)).findByTgId(captor.capture());
 		assertEquals(tgId, captor.getValue());
 	}
 
-	private void checkCallRepositorySave(UserDao userDao) {
+	private void checkCall_Repository_Save(UserDao userDao) {
 		ArgumentCaptor<UserDao> captor = ArgumentCaptor.forClass(UserDao.class);
 		verify(repository, times(1)).save(captor.capture());
 
 		compareUserDao(userDao, captor.getValue());
 	}
+
+	// Helpful methods
 
 	private void compareUser(User expected, User actual) {
 		assertEquals(expected.getId(), actual.getId());
