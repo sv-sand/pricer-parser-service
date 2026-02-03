@@ -85,6 +85,10 @@ public class Data {
 		return productDao;
 	}
 
+	public static Parser.ParsedProduct parsedProduct() {
+		return new Parser.ParsedProduct(101L, "Product 1", "http://example.com/1", 500.0);
+	}
+
 	public static List<Product> products(Search search) {
 		return List.of(
 				new Product(1L, "Product 1", search.getStore(), search, 101L, "http://example.com/1", 500.0, false, 1001L),

@@ -1,0 +1,1 @@
+open target/site/jacoco/index.html
