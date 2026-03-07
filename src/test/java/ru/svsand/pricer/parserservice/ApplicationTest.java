@@ -39,5 +39,8 @@ class ApplicationTest {
 
 		// Act
 		Application.main(new String[]{});
+
+		// Assert
+		mockedSpringApplication.verify(() -> SpringApplication.run(Application.class, new String[]{}));
 	}
 }

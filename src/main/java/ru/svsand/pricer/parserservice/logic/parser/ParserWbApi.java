@@ -26,8 +26,8 @@ public class ParserWbApi implements Parser {
 	final String PRODUCT_LINK = "https://www.wildberries.ru/catalog/%d/detail.aspx";
 
 	@Override
-	public void close() throws IOException {
-
+	public void close() {
+		// No resources to close
 	}
 
 	@Override
