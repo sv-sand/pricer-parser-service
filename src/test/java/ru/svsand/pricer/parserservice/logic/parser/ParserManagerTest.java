@@ -8,7 +8,6 @@ import ru.svsand.pricer.parserservice.Data;
 import ru.svsand.pricer.parserservice.logic.Product;
 import ru.svsand.pricer.parserservice.logic.Search;
 import ru.svsand.pricer.parserservice.logic.Store;
-import ru.svsand.pricer.parserservice.logic.User;
 
 import static org.junit.jupiter.api.Assertions.*;
 
