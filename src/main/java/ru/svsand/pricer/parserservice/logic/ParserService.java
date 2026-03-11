@@ -15,14 +15,18 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
+ * Scheduled service that orchestrates periodic product price updates.
+ * Every 60 seconds it fetches searches that are due for a refresh, invokes the appropriate
+ * marketplace parser for each one, persists execution statistics, and saves the filtered results.
+ *
  * @author sand <sve.snd@gmail.com>
  * @since 23.10.2025
  */
-
 @Slf4j
 @Service
 public class ParserService {
 
+	/** Maximum number of products retained per search after price filtering and sorting. */
 	public static final int MAX_PRODUCTS_PER_SEARCH = 3;
 
 	@Autowired
@@ -34,6 +38,11 @@ public class ParserService {
 	@Autowired
 	private SearchStatisticManager searchStatisticManager;
 
+	/**
+	 * Scheduled entry point that triggers product updates for all searches due for a refresh.
+	 * Runs every 60 seconds. Each search is processed independently; errors are logged and
+	 * do not prevent remaining searches from being processed.
+	 */
 	@Scheduled(fixedRate = 60*1000)
 	public void updateProducts() {
 		log.info("Updating products");

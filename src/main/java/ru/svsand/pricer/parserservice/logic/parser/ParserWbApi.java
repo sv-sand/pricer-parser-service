@@ -16,20 +16,31 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
+ * {@link Parser} implementation that queries the Wildberries internal search API.
+ * Sends an HTTP GET request with URL-encoded keywords, parses the JSON response,
+ * and extracts product data including per-size prices.
+ *
  * @author sand <sve.snd@gmail.com>
  * @since 01.11.2025
  */
-
 public class ParserWbApi implements Parser {
 
 	final String SEARCH_URL = "https://www.wildberries.ru/__internal/u-search/exactmatch/ru/common/v18/search?ab_testing=false&appType=1&curr=rub&dest=-1257786&hide_dtype=11&inheritFilters=false&lang=ru&page=1&query=%s&resultset=catalog&sort=priceup&spp=30&suppressSpellcheck=false"; // Example API endpoint
 	final String PRODUCT_LINK = "https://www.wildberries.ru/catalog/%d/detail.aspx";
 
+	/** No-op — this parser holds no resources that require explicit cleanup. */
 	@Override
 	public void close() {
 		// No resources to close
 	}
 
+	/**
+	 * Searches Wildberries for products matching the given keywords.
+	 *
+	 * @param productKeyWords space-separated search terms
+	 * @return a {@link Result} with status code 200 and the parsed products on success,
+	 *         or a non-200 / zero status code with an error description on failure
+	 */
 	@Override
 	public Result findProducts(String productKeyWords) {
 		List<ParsedProduct> products = new ArrayList<>();
