@@ -4,10 +4,12 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 /**
+ * JPA entity mapped to the {@code products} table.
+ * Represents the persistence form of a {@link ru.svsand.pricer.parserservice.logic.Product}.
+ *
  * @author sand <sve.snd@gmail.com>
  * @since 28.10.2025
  */
-
 @Entity
 @Data
 @Table(name = "products")

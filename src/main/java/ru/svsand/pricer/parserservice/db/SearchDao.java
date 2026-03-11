@@ -6,10 +6,12 @@ import lombok.Data;
 import java.sql.Timestamp;
 
 /**
+ * JPA entity mapped to the {@code searches} table.
+ * Represents the persistence form of a {@link ru.svsand.pricer.parserservice.logic.Search}.
+ *
  * @author sand <sve.snd@gmail.com>
  * @since 28.10.2025
  */
-
 @Entity
 @Data
 @Table(name = "searches")
