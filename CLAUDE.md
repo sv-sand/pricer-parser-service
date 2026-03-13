@@ -32,18 +32,20 @@ Microservice part of the **Pricer** system. Responsible for periodically parsing
 
 ```
 ru.svsand.pricer.parserservice/
-├── Application.java          # Entry point; @EnableScheduling
-├── logic/
+├── Application.java          # Entry point
+│
+├── logic/                    # Business layer
 │   ├── ParserService.java    # Scheduled orchestrator (runs every 60s)
 │   ├── parser/
 │   │   ├── Parser.java       # Interface + Result/ParsedProduct records
 │   │   ├── ParserManager.java # Factory: createParserByStore(), domain conversion
 │   │   └── ParserWbApi.java  # Wildberries HTTP client (Java HttpClient + org.json)
 │   └── [domain models]       # Product, Search, User, SearchStatistic, Store (enum)
-└── db/
-    ├── DAOs/                 # JPA entities (ProductDao, SearchDao, etc.)
-    ├── Managers/             # Business logic over repositories (ProductManager, etc.)
-    └── Repositories/         # Spring Data JPA interfaces
+│
+└── db/                       # Database layer
+    ├── [DAOs]                # JPA entities (ProductDao, SearchDao, etc.)
+    ├── [Managers]            # Business logic over repositories (ProductManager, etc.)
+    └── [Repositories]        # Spring Data JPA interfaces
 ```
 
 ### Domain vs DAO separation
